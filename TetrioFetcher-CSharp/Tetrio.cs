@@ -6,6 +6,10 @@ namespace Tetrio;
 
 public class TetrioAPIPerser(JsonObject data)
 {
+    private static void Main()
+    {
+
+    }
     private JsonObject Data = data;
     private JsonNode? GetJsonNode(string PropertyName)
     {
