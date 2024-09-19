@@ -4,12 +4,12 @@ using static Tetrio.User.TetrioUserTypes;
 
 namespace Tetrio;
 
+/// <summary>
+/// Tetrioのデータを安全にパースするためのクラスです
+/// </summary>
+/// <param name="data"></param>
 public class TetrioAPIPerser(JsonObject data)
 {
-    private static void Main()
-    {
-
-    }
     private JsonObject Data = data;
     private JsonNode? GetJsonNode(string PropertyName)
     {
