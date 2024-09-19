@@ -13,5 +13,5 @@ Issuesに関してはどんどん受け付けております
 [Tetrio.User.Accountクラス](TetrioFetcher-CSharp/TetrioUser.cs)からAPIのデータを取得できます
 取得する際に1秒のインターバルが発生します
 
-(Tetrio.RecordData)[TetrioFetcher-CSharp/RecordData.cs)からリプレイデータの詳細を一部取得できます(盤面等は取得できません)
+[Tetrio.RecordData](TetrioFetcher-CSharp/RecordData.cs)からリプレイデータの詳細を一部取得できます(盤面等は取得できません)
 例えば、apmなどのstats、ユーザーの各ラウンドの詳細プレイ時間等です
