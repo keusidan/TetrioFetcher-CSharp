@@ -1,41 +1,8 @@
 ﻿using static Tetrio.User.TetrioUserTypes;
+using Tetrio.API;
 using System.Text.Json.Nodes;
 
 namespace Tetrio.User;
-public static class DelayGetAPI
-{
-    private static List<string> SyncURLs = new();
-    public static Task<JsonNode?> GetDataAsync(string GetAPIURL)
-    {
-        lock (SyncURLs)
-        {
-            SyncURLs.Add(GetAPIURL);
-        }
-        while (SyncURLs.First() != GetAPIURL) ;
-        JsonNode ResultData = JsonNode.Parse("{}")!;
-        lock (SyncURLs)
-        {
-            using (HttpClient TetrioClient = new())
-            {
-                try
-                {
-                    ResultData = JsonNode.Parse(TetrioClient.GetStringAsync(GetAPIURL.ToLower()).Result);
-                }
-                catch (ArgumentException ex)
-                {
-                    throw new ArgumentException("指定されたユーザーは見つかりませんでした");
-                }
-                catch
-                {
-                    throw;
-                }
-            }
-        }
-        Thread.Sleep(1000);
-        SyncURLs.Remove(GetAPIURL);
-        return Task.FromResult<JsonNode>(ResultData);
-    }
-}
 public static class TetrioUserTypes
 {
     public enum GameMode
@@ -49,16 +16,6 @@ public static class TetrioUserTypes
         CustomRoom,
         Zenith,
         Other
-    }
-    public enum Summaries
-    {
-        _40Line,
-        Blitz,
-        QuickPlay,
-        Expert_QuickPlay,
-        TetraLeague,
-        Zen,
-        Achievements
     }
     public enum Rank
     {
@@ -182,30 +139,17 @@ public record Cache
         Cached_Until = until;
     }
 }
-public class Account(string connectionuserparameter)
+public class Account(string ConnectionUserParameter)
 {
-    public string ConnectionUserParameter = connectionuserparameter;
     private Lazy<Info?> _LazyInfo = new(() =>
     {
-        try
-        {
-            return new Info(DelayGetAPI.GetDataAsync($"https://ch.tetr.io/api/users/{connectionuserparameter}").Result.AsObject());
-        }
-        catch
-        {
-            return null;
-        }
+        JsonNode? Data = DelayAPI.GetDataAsync($"https://ch.tetr.io/api/users/{ConnectionUserParameter.ToLower()}").Result;
+        return Data != null ? new Info(Data.AsObject()) : null;
     });
     private Lazy<League?> _LazyLeague = new(() =>
     {
-        try
-        {
-            return new League(DelayGetAPI.GetDataAsync($"https://ch.tetr.io/api/users/{connectionuserparameter}/summaries/league").Result.AsObject());
-        }
-        catch
-        {
-            return null;
-        }
+        JsonNode? Data = DelayAPI.GetDataAsync($"https://ch.tetr.io/api/users/{ConnectionUserParameter.ToLower()}/summaries/league").Result;
+        return Data != null ? new League(Data.AsObject()) : null;
     });
     public Info? InfoData => _LazyInfo.Value;
     public League? LeagueData => _LazyLeague.Value;
