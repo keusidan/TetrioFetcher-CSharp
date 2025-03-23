@@ -10,7 +10,7 @@ Issuesに関してはどんどん受け付けております
 
 > 使い方
 
-[Tetrio.User名前空間 TetraChAccountクラス](TetrioFetcher-CSharp/TetrioUser.cs)からAPIのデータを取得できます
+[Tetrio.User名前空間 TetraChAccountクラス](TetrioFetcher-CSharp/User/User.cs)からAPIのデータを取得できます
 取得する際に1秒のインターバルが発生します
 
 [Tetrio.RecordData名前空間](TetrioFetcher-CSharp/RecordData.cs)からリプレイデータの詳細を一部取得できます(盤面等は取得できません)
