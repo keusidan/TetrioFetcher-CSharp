@@ -7,7 +7,7 @@ namespace Tetrio.Record;
 public class RecordData
 {
     public string? ReplayId { get; }
-    public TetrioUserTypes.GameMode GameMode { get; }
+    public GameMode GameMode { get; }
     public DateTimeOffset TimeStamp { get; }
     public TimeSpan AllGameTime => new TimeSpan(UserDatas.First().MatchDatas.Select(x => x.LifeTime).Sum(x => x.Ticks));
     public int Version { get; }
@@ -27,12 +27,12 @@ public class RecordData
                     if (ReplayData.TryGetPropertyValue("_id", out JsonNode replayid))
                     {
                         ReplayId = replayid.ToString();
-                        GameMode = TetrioUserTypes.GameMode.TetraLeague;
+                        GameMode = GameMode.TetraLeague;
                     }
                     else
                     {
                         ReplayId = null;
-                        GameMode = TetrioUserTypes.GameMode.TetraLeague;
+                        GameMode = GameMode.TetraLeague;
                     }
                     TimeStamp = DateTimeOffset.Parse(ReplayData["ts"]?.ToString());
                     Is_Broken = false;
@@ -45,8 +45,8 @@ public class RecordData
                     ReplayId = ReplayData["id"]?.ToString();
                     GameMode = ReplayData["gamemode"]?.ToString() switch
                     {
-                        null => TetrioUserTypes.GameMode.CustomRoom,
-                        "league" => TetrioUserTypes.GameMode.TetraLeague,
+                        null => GameMode.CustomRoom,
+                        "league" => GameMode.TetraLeague,
                         _ => throw new NotImplementedException()
                     };
                     TimeStamp = DateTimeOffset.Parse(ReplayData["ts"].ToString());
@@ -108,9 +108,9 @@ public class RecordData
         public double PeakAPP => MatchDatas.Select(x => x.APP).Max();
         public int AllGarbageSent { get; }
         public int AllGarbageRecived { get; }
-        public VSUserData(int Version, TetrioUserTypes.GameMode gameMode, string username, JsonNode ReplayData)
+        public VSUserData(int Version, GameMode gameMode, string username, JsonNode ReplayData)
         {
-            if (gameMode == TetrioUserTypes.GameMode.TetraLeague || gameMode == TetrioUserTypes.GameMode.CustomRoom)
+            if (gameMode == GameMode.TetraLeague || gameMode == GameMode.CustomRoom)
                 switch (Version)
                 {
                     case 0:
@@ -128,7 +128,7 @@ public class RecordData
                             int WonCount = 0;
                             for (int i = 0; i < Boards.Count; i++)
                             {
-                                if (gameMode == TetrioUserTypes.GameMode.CustomRoom)
+                                if (gameMode == GameMode.CustomRoom)
                                 {
                                     WonCount = int.Parse(Boards[i]["wins"].ToString());
                                     MatchDatas.Add(new VSMatchData(Version, gameMode, ReplayEventEnds[i], ref WonCount));
@@ -201,7 +201,7 @@ public class RecordData
         public TimeSpan LifeTime { get; }
         public int GarbageSent { get; }
         public int GarbageRecived { get; }
-        public VSMatchData(int Version, TetrioUserTypes.GameMode gameMode, JsonNode RoundData, ref int woncount)
+        public VSMatchData(int Version, GameMode gameMode, JsonNode RoundData, ref int woncount)
         {
             switch (Version)
             {
@@ -211,7 +211,7 @@ public class RecordData
                         LifeTime = TimeSpan.FromMilliseconds(int.Parse(RoundData["frame"].ToString()) * 1000 / 60);
                         var Data = RoundData["data"];
                         Alive = Data["reason"].ToString() == "winner";
-                        WonCount = gameMode == TetrioUserTypes.GameMode.CustomRoom ? woncount : Alive ? woncount : woncount++;
+                        WonCount = gameMode == GameMode.CustomRoom ? woncount : Alive ? woncount : woncount++;
                         var Export = Data["export"];
                         var Garbage = Export["stats"]["garbage"];
                         GarbageSent = int.Parse(Garbage["sent"].ToString());

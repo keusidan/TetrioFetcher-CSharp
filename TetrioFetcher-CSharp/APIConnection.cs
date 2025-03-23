@@ -1,4 +1,6 @@
 ﻿using System.Text.Json.Nodes;
+using Tetrio.User;
+
 namespace Tetrio.API;
 public class DelayAPI
 {
@@ -39,4 +41,41 @@ public class DelayAPI
             throw;
         }
     }
+}
+
+public record Cache
+{
+    public CacheStatus Status { get; }
+    public long Cached_At { get; }
+    public long Cached_Until { get; }
+    public Cache(string status, long at, long until)
+    {
+        Status = ToCacheStatus(status);
+        Cached_At = at;
+        Cached_Until = until;
+    }
+    public Cache(JsonNode CacheJson)
+    {
+        Status = ToCacheStatus(CacheJson["status"].ToString());
+        Cached_At = long.Parse(CacheJson["cached_at"].ToString());
+        Cached_Until = long.Parse(CacheJson["cached_until"].ToString());
+    }
+    private CacheStatus ToCacheStatus(string status)
+    {
+        switch (status)
+        {
+            case "hit": return CacheStatus.Hit;
+            case "miss": return CacheStatus.Miss;
+            case "awaited": return CacheStatus.Awaited;
+            default: throw new NotImplementedException();
+        }
+        ;
+    }
+}
+
+public enum CacheStatus
+{
+    Hit,
+    Miss,
+    Awaited
 }

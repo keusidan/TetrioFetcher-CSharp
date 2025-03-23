@@ -1,6 +1,8 @@
 ﻿using System.Data;
 using System.Text.Json.Nodes;
-using static Tetrio.User.TetrioUserTypes;
+using Tetrio.TetraLeague;
+using Tetrio.User;
+using Tetrio.User.TetraLeague;
 
 namespace Tetrio;
 
@@ -8,10 +10,10 @@ namespace Tetrio;
 /// Tetrioのデータを安全にパースするためのクラスです
 /// </summary>
 /// <param name="data"></param>
-public class TetrioAPIPerser(JsonObject data)
+public class TetrioAPIPerser(JsonNode data)
 {
-    private JsonObject Data = data;
-    private JsonNode? GetJsonNode(string PropertyName)
+    private JsonObject Data = data.AsObject();
+    public JsonNode? GetJsonNode(string PropertyName)
     {
         if (Data.TryGetPropertyValue(PropertyName, out JsonNode GetData)) return GetData;
         else return null;
@@ -19,6 +21,7 @@ public class TetrioAPIPerser(JsonObject data)
     public string? GetString(string PropertyName) => GetJsonNode(PropertyName).ToString();
     public int? GetInt(string PropertyName) => GetString(PropertyName) is not null and string value ? int.Parse(value) : null;
     public double? GetDouble(string PropertyName) => GetString(PropertyName) is not null and string value ? double.Parse(value) : null;
-    public Role? GetRole(string PropertyName) => GetString(PropertyName) is not null and string value ? Tetrio.User.TetrioUserTypes.GetRole(value) : null;
-    public Rank? GetRank(string PropertyName) => GetString(PropertyName) is not null and string value ? Tetrio.User.TetrioUserTypes.GetRank(value) : null;
+    public long? GetLong(string PropertyName) => GetString(PropertyName) is not null and string value ? long.Parse(value) : null;
+    public Role? GetRole(string PropertyName) => GetString(PropertyName) is not null and string value ? UserInfo.GetRole(value) : null;
+    public Rank? GetRank(string PropertyName) => GetString(PropertyName) is not null and string value ? UserLeague.GetRank(value) : null;
 }
