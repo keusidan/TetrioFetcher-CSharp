@@ -62,14 +62,14 @@ public class TetraChAccount(string ConnectionUserParameter)
         JsonNode? Data = DelayAPI.GetDataAsync($"https://ch.tetr.io/api/users/{ConnectionUserParameter.ToLower()}/summaries/league").Result;
         return Data != null ? new UserLeague(Data.AsObject()) : null;
     });
-    private Lazy<UserLeagueFlow?> _LazyStats = new(() =>
+    private Lazy<UserLeagueFlow?> _LazyLeagueFlow = new(() =>
     {
         JsonNode? Data = DelayAPI.GetDataAsync($"https://ch.tetr.io/api/labs/leagueflow/{ConnectionUserParameter.ToLower()}").Result;
         return Data != null ? new UserLeagueFlow(Data) : null;
     });
     public UserInfo? InfoData => _LazyInfo.Value;
     public UserLeague? LeagueData => _LazyLeague.Value;
-    public UserLeagueFlow? LeagueFlowData => _LazyStats.Value;
+    public UserLeagueFlow? LeagueFlowData => _LazyLeagueFlow.Value;
 }
 public class UserInfo
 {
