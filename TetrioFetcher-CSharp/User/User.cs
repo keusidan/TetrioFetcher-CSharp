@@ -69,6 +69,7 @@ public class TetraChAccount(string ConnectionUserParameter)
     });
     public UserInfo? InfoData => _LazyInfo.Value;
     public UserLeague? LeagueData => _LazyLeague.Value;
+    public UserLeagueFlow? LeagueFlowData => _LazyStats.Value;
 }
 public class UserInfo
 {
