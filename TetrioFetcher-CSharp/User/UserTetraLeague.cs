@@ -172,12 +172,12 @@ public class UserLeagueFlow
         StartTime = long.Parse(UserLeagueFlowJson["data"]["startTime"].ToString());
         foreach (var Point in UserLeagueFlowJson["data"]["points"].AsArray())
         {
-            LeagueResultPoint LeagueResultPoint = new(Point.AsArray(), StartTime);
+            Points.Add(new(Point.AsArray(), StartTime));
         }
     }
     public Cache Cache { get; }
     public long StartTime { get; }
-
+    public List<LeagueResultPoint> Points { get; } = new();
     public class LeagueResultPoint
     {
         public LeagueResultPoint(JsonArray PointJson, long StartTime)
